@@ -1,0 +1,30 @@
+[
+{
+  "model": "core.country",
+  "pk": "br1",
+  "fields": {
+    "name": "Brazil"
+  }
+},
+{
+  "model": "core.country",
+  "pk": "in1",
+  "fields": {
+    "name": "India"
+  }
+},
+{
+  "model": "core.country",
+  "pk": "ru20",
+  "fields": {
+    "name": "Russia"
+  }
+},
+{
+  "model": "core.country",
+  "pk": "tr1",
+  "fields": {
+    "name": "Turkey"
+  }
+}
+]

@@ -1,0 +1,16 @@
+.idea
+.venv
+logs
+__pycache__
+.ruff_cache
+
+data
+letsencrypt
+webroot
+media
+static
+
+db.sqlite3
+.env
+celerybeat-schedule
+*.mo
