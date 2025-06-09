@@ -6,7 +6,7 @@ from aiogram.enums import ChatType
 from aiogram.types import BotCommand
 
 from bot.loader import bot, dp, i18n, logger, loop
-from bot.utils.loop_tasks import run_loop_task
+from bot.utils.aio import run_loop_task
 
 
 async def main():

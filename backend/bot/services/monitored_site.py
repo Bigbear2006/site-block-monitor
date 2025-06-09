@@ -9,8 +9,8 @@ from django.db.models import (
 )
 from django.utils.timezone import now
 
+from bot.integrations.ping_admin import add_task, delete_task, edit_task
 from bot.loader import logger
-from bot.ping_admin.client import add_task, delete_task, edit_task
 from core.models import (
     ClientMonitoredSite,
     Country,
@@ -18,6 +18,20 @@ from core.models import (
     Site,
     SiteCheck,
 )
+
+
+async def get_monitored_site(site: Site, country: Country, period: int):
+    monitored_site = await MonitoredSite.objects.aget(
+        site=site,
+        country=country,
+    )
+    if monitored_site.period > period:
+        await edit_task(monitored_site.task_id, period=period)
+        await MonitoredSite.objects.update_by_id(
+            monitored_site.pk,
+            period=period,
+        )
+    return monitored_site
 
 
 async def get_or_create_monitored_site(
@@ -28,16 +42,7 @@ async def get_or_create_monitored_site(
     site, created = await Site.objects.aget_or_create(url=site_url)
     country = await Country.objects.aget(code=country_code)
     try:
-        monitored_site = await MonitoredSite.objects.aget(
-            site=site,
-            country=country,
-        )
-        if monitored_site.period > period:
-            await edit_task(monitored_site.task_id, period=period)
-            await MonitoredSite.objects.update_by_id(
-                monitored_site.pk,
-                period=period,
-            )
+        monitored_site = await get_monitored_site(site, country, period)
     except ObjectDoesNotExist:
         task_id = await add_task(site_url, country_code, period)
         try:
@@ -48,10 +53,7 @@ async def get_or_create_monitored_site(
                 period=period,
             )
         except IntegrityError:
-            monitored_site = await MonitoredSite.objects.aget(
-                site=site,
-                country=country,
-            )
+            monitored_site = await get_monitored_site(site, country, period)
     return monitored_site
 
 

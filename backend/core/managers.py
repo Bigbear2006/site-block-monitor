@@ -69,7 +69,10 @@ class MonitoredSiteManager(models.Manager):
 
 class ClientMonitoredSiteManager(models.Manager):
     async def get_by_id(self, pk: int | str) -> 'ClientMonitoredSite':
-        return await self.select_related(
+        return await self.with_site_and_country().aget(pk=pk)
+
+    def with_site_and_country(self):
+        return self.select_related(
             'monitored_site__site',
             'monitored_site__country',
-        ).aget(pk=pk)
+        )

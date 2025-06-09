@@ -2,20 +2,9 @@ import asyncio
 
 from django.db.models import Max
 
-from bot.loader import logger
-from bot.ping_admin.client import PingAdminClient
+from bot.integrations.ping_admin import PingAdminClient
+from bot.utils.aio import asyncio_wait
 from core.models import MonitoredSite, SiteCheck
-
-
-async def asyncio_wait(
-    fs,
-    *,
-    timeout=None,
-    return_when=asyncio.ALL_COMPLETED,
-) -> tuple[set, set]:
-    if not fs:
-        return set(), set()
-    return await asyncio.wait(fs, timeout=timeout, return_when=return_when)
 
 
 async def fetch_task_stats(ping_admin: PingAdminClient, site: MonitoredSite):
@@ -26,7 +15,6 @@ async def fetch_task_stats(ping_admin: PingAdminClient, site: MonitoredSite):
     )['last_check_date']
 
     stats = await ping_admin.get_task_stats(site.task_id)
-    logger.info(stats)
     if last_check_date:
         stats = [i for i in stats if i.date > last_check_date]
 

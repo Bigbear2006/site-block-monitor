@@ -43,6 +43,14 @@ def back_to_monitored_site_kb(cms_id: int | str):
     )
 
 
+def pay_kb():
+    return one_button_keyboard(
+        text=_('Pay'),
+        callback_data='pay_one_site',
+        back_button_data='to_menu',
+    )
+
+
 async def get_countries_kb():
     return await keyboard_from_queryset(
         Country.objects.all(),

@@ -2,10 +2,13 @@ import asyncio
 import functools
 
 from aiogram.exceptions import TelegramBadRequest, TelegramRetryAfter
+from aiogram.utils.i18n import gettext as _
 from celery import shared_task
 from celery.utils.log import get_task_logger
 
-from bot.loader import bot
+from bot.loader import bot, i18n
+from bot.utils.aio import asyncio_wait
+from core.models import Client, MonitoredSite
 
 task_logger = get_task_logger(__name__)
 
@@ -38,10 +41,43 @@ async def safe_send_message(chat_id: int | str, text: str, **kwargs):
 def async_shared_task(func):
     @shared_task
     @functools.wraps(func)
-    def decorator():
+    def decorator(*args, **kwargs):
         loop = asyncio.get_event_loop()
         if loop.is_closed():
             loop = asyncio.new_event_loop()
-        loop.run_until_complete(func())
+        loop.run_until_complete(func(*args, **kwargs))
 
     return decorator
+
+
+async def send_site_status_message(
+    client: Client,
+    site: MonitoredSite,
+    status: str,
+):
+    with i18n.context(), i18n.use_locale(client.language):
+        await safe_send_message(
+            client.pk,
+            _('Site {site} status in {country}: {status}').format(
+                site=site.site.url,
+                country=site.country.name,
+                status=status,
+            ),
+        )
+
+
+@async_shared_task
+async def notify_site_status(task_id: int, status: str):
+    site = await MonitoredSite.objects.select_related('site', 'country').aget(
+        pk=task_id,
+    )
+    await asyncio_wait(
+        [
+            asyncio.create_task(
+                send_site_status_message(client, site, status),
+            )
+            async for client in Client.objects.filter(
+                monitored_sites__monitored_site=site,
+            )
+        ],
+    )

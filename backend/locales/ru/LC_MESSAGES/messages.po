@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-06 22:55+0300\n"
+"POT-Creation-Date: 2025-06-09 14:49+0300\n"
 "PO-Revision-Date: 2025-06-06 22:56+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -19,99 +19,129 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: bot/handlers/checks_history.py:13
+#: backend/bot/handlers/checks_history.py:14
 msgid "Working"
-msgstr ""
+msgstr "Работает"
 
-#: bot/handlers/checks_history.py:14
+#: backend/bot/handlers/checks_history.py:15
 msgid "Not Working"
-msgstr ""
+msgstr "Не работает"
 
-#: bot/handlers/checks_history.py:16
+#: backend/bot/handlers/checks_history.py:17
 #, python-brace-format
 msgid ""
 "URL: {url}\n"
-"Country:{country}\n"
+"Country: {country}\n"
 "Date: {date}\n"
 "Status: {status}"
 msgstr ""
+"URL: {url}\n"
+"Страна: {country}\n"
+"Дата: {date}\n"
+"Статус: {status}"
 
-#: bot/handlers/menu.py:13 bot/handlers/start.py:22
+#: backend/bot/handlers/menu.py:15 backend/bot/handlers/start.py:24
 msgid "Hello! I'm SiteOn - sites block monitor!"
-msgstr ""
+msgstr "Привет! Я SiteOn - бот для мониторинга сайтов"
 
-#: bot/handlers/monitored_site.py:27
+#: backend/bot/handlers/monitored_site.py:36
+msgid "Monitoring a single site in one country costs €10 per month"
+msgstr "Мониторинг одного сайта в одной стране стоит 10€ в месяц"
+
+#: backend/bot/handlers/monitored_site.py:43
+msgid "One site monitoring"
+msgstr "Мониторинг одного сайта"
+
+#: backend/bot/handlers/monitored_site.py:63
+#: backend/bot/handlers/monitored_site.py:76
 msgid "Enter site URL"
-msgstr ""
+msgstr "Введите URL"
 
-#: bot/handlers/monitored_site.py:35
+#: backend/bot/handlers/monitored_site.py:87
 msgid "URL has been changed!"
-msgstr ""
+msgstr "URL изменен!"
 
-#: bot/handlers/monitored_site.py:44
+#: backend/bot/handlers/monitored_site.py:96
+#: backend/bot/handlers/monitored_site.py:106
 msgid "Choose country"
-msgstr ""
+msgstr "Выберите страну"
 
-#: bot/handlers/monitored_site.py:58
+#: backend/bot/handlers/monitored_site.py:120
 msgid "Country has been changed!"
-msgstr ""
+msgstr "Страна изменена!"
 
-#: bot/handlers/monitored_site.py:70
+#: backend/bot/handlers/monitored_site.py:131
 msgid "Site added!"
-msgstr ""
+msgstr "Сайт добавлен!"
 
-#: bot/handlers/monitored_site.py:76
+#: backend/bot/handlers/monitored_site.py:138
 msgid "You're monitoring these sites"
-msgstr ""
+msgstr "Вы отслеживаете эти сайты"
 
-#: bot/handlers/monitored_site.py:88
+#: backend/bot/handlers/monitored_site.py:151
 #, python-brace-format
 msgid ""
 "URL: {url}\n"
 "Country: {country}"
 msgstr ""
+"URL: {url}\n"
+"Страна: {country}"
 
-#: bot/handlers/settings.py:18 bot/keyboards/menu.py:26
+#: backend/bot/handlers/settings.py:20 backend/bot/keyboards/menu.py:26
 msgid "Settings"
-msgstr ""
+msgstr "Настройки"
 
-#: bot/handlers/settings.py:35
+#: backend/bot/handlers/settings.py:42
 #, python-brace-format
 msgid "Current language: {lang}"
-msgstr ""
+msgstr "Текущий язык: {lang}"
 
-#: bot/keyboards/menu.py:12
+#: backend/bot/keyboards/menu.py:12
 msgid "Add site"
-msgstr ""
+msgstr "Добавить сайт"
 
-#: bot/keyboards/menu.py:16
+#: backend/bot/keyboards/menu.py:16
 msgid "My sites"
-msgstr ""
+msgstr "Мои сайты"
 
-#: bot/keyboards/menu.py:22
+#: backend/bot/keyboards/menu.py:22
 msgid "Checks history"
-msgstr ""
+msgstr "История проверок"
 
-#: bot/keyboards/menu.py:35 bot/keyboards/monitored_site.py:29
-#: bot/keyboards/monitored_site.py:39 bot/keyboards/settings.py:14
-#: bot/keyboards/utils.py:45 bot/keyboards/utils.py:88
-#: bot/keyboards/utils.py:106
+#: backend/bot/keyboards/menu.py:35 backend/bot/keyboards/monitored_site.py:31
+#: backend/bot/keyboards/monitored_site.py:41
+#: backend/bot/keyboards/settings.py:14 backend/bot/keyboards/utils.py:45
+#: backend/bot/keyboards/utils.py:88 backend/bot/keyboards/utils.py:106
 msgid "Back"
-msgstr ""
+msgstr "Назад"
 
-#: bot/keyboards/monitored_site.py:13
+#: backend/bot/keyboards/monitored_site.py:13
 msgid "Edit URL"
-msgstr ""
+msgstr "Изменить URL"
 
-#: bot/keyboards/monitored_site.py:17
+#: backend/bot/keyboards/monitored_site.py:19
 msgid "Edit Country"
-msgstr ""
+msgstr "Изменить страну"
 
-#: bot/keyboards/monitored_site.py:23
+#: backend/bot/keyboards/monitored_site.py:25
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
-#: bot/keyboards/settings.py:10
+#: backend/bot/keyboards/monitored_site.py:48
+msgid "Pay"
+msgstr "Оплатить"
+
+#: backend/bot/keyboards/settings.py:10
 msgid "Language"
-msgstr ""
+msgstr "Язык"
+
+#: backend/bot/utils/validators.py:14
+#, fuzzy
+msgid "Invalid URL or it does not exist. It must start with http:// or https://"
+msgstr "Неверный URL. Он должен начинаться с http:// или https://"
+
+#: backend/core/tasks.py:61
+#, python-brace-format
+msgid "Site {site} status in {country}: {status}"
+msgstr "Статус сайта {site} в стране {country}: {status}"
 

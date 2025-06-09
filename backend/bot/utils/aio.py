@@ -5,6 +5,17 @@ from typing import Any
 from bot.loader import logger, loop
 
 
+async def asyncio_wait(
+    fs,
+    *,
+    timeout=None,
+    return_when=asyncio.ALL_COMPLETED,
+) -> tuple[set, set]:
+    if not fs:
+        return set(), set()
+    return await asyncio.wait(fs, timeout=timeout, return_when=return_when)
+
+
 async def run_loop_task(
     func: Callable[[], Coroutine[Any, Any, None]],
     *,

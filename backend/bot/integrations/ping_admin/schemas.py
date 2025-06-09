@@ -1,8 +1,25 @@
 from dataclasses import dataclass, field
 from datetime import datetime
+from enum import StrEnum
 from typing import Literal
 
 from bot.config import config
+
+
+class CheckType(StrEnum):
+    HTTP_HEAD = 'http'
+    HTTP_GET = 'http_get'
+    HTTP_POST = 'http_post'
+    HTTPS_HEAD = 'https'
+    HTTPS_GET = 'https_get'
+    HTTPS_POST = 'https_post'
+    PING = 'ping'
+
+    @classmethod
+    def from_url(cls, site_url: str):
+        return (
+            cls.HTTP_GET if site_url.startswith('http://') else cls.HTTPS_GET
+        )
 
 
 @dataclass(frozen=True)
@@ -20,10 +37,12 @@ class AddTaskParams(BasePingAdminParams):
 
     url: str
     tm: str
+    tip: CheckType = CheckType.HTTP_HEAD
     period: int = 5
     algoritm: int = 1
     oshib: int = 0
     sa: str = field(init=False, default='new_task')
+    https: str = field(init=False, default=config.PING_ADMIN_WEBHOOK_URL)
 
 
 @dataclass(frozen=True)
@@ -33,7 +52,8 @@ class EditTaskParams(BasePingAdminParams):
     id: int
     url: str = ''
     tm: str = ''
-    period: int = ''
+    tip: CheckType | str = ''
+    period: int | str = ''
     status: Literal[0, 1, ''] = ''
     sa: str = field(init=False, default='edit_task')
 

@@ -1,15 +1,22 @@
 from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import (
+    CallbackQuery,
+    LabeledPrice,
+    Message,
+    PreCheckoutQuery,
+)
 from aiogram.utils.i18n import gettext as _
 
+from bot.config import config
 from bot.keyboards.menu import to_menu_kb
 from bot.keyboards.monitored_site import (
     back_to_monitored_site_kb,
     get_countries_kb,
     get_monitored_sites_kb,
     monitored_site_kb,
+    pay_kb,
 )
 from bot.services.monitored_site import (
     add_monitored_site_to_client,
@@ -17,15 +24,42 @@ from bot.services.monitored_site import (
     edit_client_monitored_site,
 )
 from bot.states import AddSiteState
+from bot.utils.validators import validate_url
 from core.models import ClientMonitoredSite
 
 router = Router()
 
 
 @router.callback_query(F.data == 'add_site')
-async def add_site_handler(query: CallbackQuery, state: FSMContext):
-    await state.set_state(AddSiteState.url)
+async def add_site_handler(query: CallbackQuery):
     await query.message.edit_text(
+        _('Monitoring a single site in one country costs €10 per month'),
+        reply_markup=pay_kb(),
+    )
+
+
+@router.callback_query(F.data == 'pay_one_site')
+async def pay_one_site(query: CallbackQuery):
+    title = _('One site monitoring')
+    await query.message.answer_invoice(
+        title,
+        title,
+        'site:one',
+        config.CURRENCY,
+        [LabeledPrice(label=config.CURRENCY, amount=10 * 100)],
+        config.PROVIDER_TOKEN,
+    )
+
+
+@router.pre_checkout_query()
+async def accept_pre_checkout_query(query: PreCheckoutQuery):
+    await query.answer(ok=True)
+
+
+@router.message(F.successful_payment)
+async def after_one_site_buying(msg: Message, state: FSMContext):
+    await state.set_state(AddSiteState.url)
+    await msg.answer(
         _('Enter site URL'),
         reply_markup=to_menu_kb(),
     )
@@ -37,13 +71,18 @@ async def edit_monitored_site_url_handler(
     state: FSMContext,
 ):
     await state.update_data(cms_id=query.data.split(':')[1])
-    await add_site_handler(query, state)
+    await state.set_state(AddSiteState.url)
+    await query.message.edit_text(
+        _('Enter site URL'),
+        reply_markup=to_menu_kb(),
+    )
 
 
 @router.message(F.text, StateFilter(AddSiteState.url))
 async def set_site_url_handler(msg: Message, state: FSMContext):
+    url = await validate_url(msg)
     if cms_id := await state.get_value('cms_id'):
-        await edit_client_monitored_site(cms_id, site_url=msg.text)
+        await edit_client_monitored_site(cms_id, site_url=url)
         await msg.answer(
             _('URL has been changed!'),
             reply_markup=back_to_monitored_site_kb(cms_id),
@@ -51,7 +90,7 @@ async def set_site_url_handler(msg: Message, state: FSMContext):
         await state.clear()
         return
 
-    await state.update_data(url=msg.text)
+    await state.update_data(url=url)
     await state.set_state(AddSiteState.country)
     await msg.answer(
         _('Choose country'),
@@ -103,10 +142,7 @@ async def monitored_sites_handler(query: CallbackQuery):
 
 @router.callback_query(F.data.startswith('monitored_site'))
 async def monitored_site_handler(query: CallbackQuery):
-    cms = await ClientMonitoredSite.objects.select_related(
-        'monitored_site__site',
-        'monitored_site__country',
-    ).aget(
+    cms = await ClientMonitoredSite.objects.with_site_and_country().aget(
         client_id=query.message.chat.id,
         monitored_site_id=query.data.split(':')[1],
     )
