@@ -33,6 +33,6 @@ async def checks_history_handler(query: CallbackQuery):
     )
 
     await query.message.edit_text(
-        _(f'Last checks\n\n{checks_info}'),
+        _('Last checks\n\n{checks_info}').format(checks_info=checks_info),
         reply_markup=to_menu_kb(),
     )

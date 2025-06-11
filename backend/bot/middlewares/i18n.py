@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import TelegramObject
 from aiogram.utils.i18n import I18nMiddleware
 
+from bot.loader import logger
 from core.models import Client
 
 
@@ -23,6 +24,7 @@ class CustomI18nMiddleware(I18nMiddleware):
         if not client:
             client = await Client.objects.get_from_event(event)
             if not client:
+                logger.info(f'Cannot find client {event}')
                 return 'en'
 
         await state.update_data(language=client.language)

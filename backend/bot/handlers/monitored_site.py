@@ -1,4 +1,4 @@
-from aiogram import F, Router
+from aiogram import F, Router, flags
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (
@@ -18,6 +18,7 @@ from bot.keyboards.monitored_site import (
     monitored_site_kb,
     pay_kb,
 )
+from bot.services.client import get_available_sites_count
 from bot.services.monitored_site import (
     add_monitored_site_to_client,
     delete_client_monitored_site,
@@ -25,13 +26,26 @@ from bot.services.monitored_site import (
 )
 from bot.states import AddSiteState
 from bot.utils.validators import validate_url
-from core.models import ClientMonitoredSite
+from core.models import Client, ClientMonitoredSite, MonitoredSite, Payment
 
 router = Router()
 
 
 @router.callback_query(F.data == 'add_site')
-async def add_site_handler(query: CallbackQuery):
+@flags.with_client
+async def add_site_handler(
+    query: CallbackQuery,
+    state: FSMContext,
+    client: Client,
+):
+    if await get_available_sites_count(client) > 0:
+        await state.set_state(AddSiteState.url)
+        await query.message.edit_text(
+            _('Enter site URL'),
+            reply_markup=to_menu_kb(),
+        )
+        return
+
     await query.message.edit_text(
         _('Monitoring a single site in one country costs €10 per month'),
         reply_markup=pay_kb(),
@@ -44,7 +58,7 @@ async def pay_one_site(query: CallbackQuery):
     await query.message.answer_invoice(
         title,
         title,
-        'site:one',
+        'add_site',
         config.CURRENCY,
         [LabeledPrice(label=config.CURRENCY, amount=10 * 100)],
         config.PROVIDER_TOKEN,
@@ -58,11 +72,9 @@ async def accept_pre_checkout_query(query: PreCheckoutQuery):
 
 @router.message(F.successful_payment)
 async def after_one_site_buying(msg: Message, state: FSMContext):
+    await Payment.objects.from_message(msg)
     await state.set_state(AddSiteState.url)
-    await msg.answer(
-        _('Enter site URL'),
-        reply_markup=to_menu_kb(),
-    )
+    await msg.answer(_('Enter site URL'), reply_markup=to_menu_kb())
 
 
 @router.callback_query(F.data.startswith('edit_monitored_site_url'))

@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 if TYPE_CHECKING:
-    from core.models import Client, ClientMonitoredSite
+    from core.models import Client, ClientMonitoredSite, Payment
 
 
 class ClientManager(models.Manager):
@@ -66,6 +66,9 @@ class MonitoredSiteManager(models.Manager):
     async def update_by_id(self, pk: int | str, **kwargs):
         return await self.filter(pk=pk).aupdate(**kwargs)
 
+    async def get_count(self, client_id: int | str):
+        return await self.filter(clients__client_id=client_id).acount()
+
 
 class ClientMonitoredSiteManager(models.Manager):
     async def get_by_id(self, pk: int | str) -> 'ClientMonitoredSite':
@@ -75,4 +78,13 @@ class ClientMonitoredSiteManager(models.Manager):
         return self.select_related(
             'monitored_site__site',
             'monitored_site__country',
+        )
+
+
+class PaymentManager(models.Manager):
+    async def from_message(self, msg: types.Message) -> 'Payment':
+        return await self.acreate(
+            client_id=msg.chat.id,
+            charge_id=msg.successful_payment.provider_payment_charge_id,
+            payload=msg.successful_payment.invoice_payload,
         )

@@ -10,6 +10,7 @@ from core.managers import (
     ClientManager,
     ClientMonitoredSiteManager,
     MonitoredSiteManager,
+    PaymentManager,
 )
 
 
@@ -125,6 +126,7 @@ class ClientMonitoredSite(models.Model):
         'clients',
         verbose_name='Сайт',
     )
+    is_active = models.BooleanField('Активен', default=True)
     subscription_end = models.DateTimeField('Оплачен до')
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата изменения', auto_now=True)
@@ -148,7 +150,7 @@ class ClientMonitoredSite(models.Model):
 class SiteCheck(models.Model):
     monitored_site = models.ForeignKey(
         MonitoredSite,
-        models.RESTRICT,
+        models.CASCADE,
         'checks',
         verbose_name='Отслеживаемый сайт',
     )
@@ -156,7 +158,7 @@ class SiteCheck(models.Model):
     description = models.TextField('Описание', blank=True)
     country = models.ForeignKey(
         Country,
-        models.RESTRICT,
+        models.CASCADE,
         'checks',
         verbose_name='Страна',
     )
@@ -176,3 +178,24 @@ class SiteCheck(models.Model):
             f'[{date_to_str(self.date)}] '
             f'{self.monitored_site} - {self.status_str}'
         )
+
+
+class Payment(models.Model):
+    client = models.ForeignKey(
+        Client,
+        models.RESTRICT,
+        'payments',
+        verbose_name='Пользователь',
+    )
+    charge_id = models.CharField('ID платежа')
+    payload = models.CharField('Тип оплаты')
+    date = models.DateTimeField(auto_now_add=True)
+    objects = PaymentManager()
+
+    class Meta:
+        verbose_name = 'Оплата'
+        verbose_name_plural = 'Оплаты'
+        ordering = ['-date']
+
+    def __str__(self):
+        return f'[{date_to_str(self.date)}] {self.client}'

@@ -46,3 +46,15 @@ lint:
 
 check:
 	ruff check
+
+extract-messages:
+	pybabel extract --input-dirs=. -o backend/locales/messages.pot
+
+init-messages:
+	pybabel init -i backend/locales/messages.pot -d backend/locales -D messages -l $(LANG)
+
+update-messages:
+	pybabel update -d backend/locales -D messages -i backend/locales/messages.pot
+
+compile-messages:
+	pybabel compile -d backend/locales -D messages

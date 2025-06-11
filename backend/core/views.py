@@ -10,4 +10,4 @@ def ping_admin_webhook(request: HttpRequest):
     status = request.GET.get('status')
     if status and task_id:
         notify_site_status.apply_async(args=(task_id, status))
-    return HttpResponse('261363d6064e37ef79db1730853aca46')
+    return HttpResponse('2bca3530a9ecdef5712f13b29089cf00')

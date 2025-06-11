@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-09 14:49+0300\n"
+"POT-Creation-Date: 2025-06-09 19:30+0300\n"
 "PO-Revision-Date: 2025-06-06 22:56+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -39,6 +39,17 @@ msgstr ""
 "Страна: {country}\n"
 "Дата: {date}\n"
 "Статус: {status}"
+
+#: backend/bot/handlers/checks_history.py:36
+#, python-brace-format
+msgid ""
+"Last checks\n"
+"\n"
+"{checks_info}"
+msgstr ""
+"Последние проверки\n"
+"\n"
+"{checks_info}"
 
 #: backend/bot/handlers/menu.py:15 backend/bot/handlers/start.py:24
 msgid "Hello! I'm SiteOn - sites block monitor!"
@@ -140,7 +151,7 @@ msgstr "Язык"
 msgid "Invalid URL or it does not exist. It must start with http:// or https://"
 msgstr "Неверный URL. Он должен начинаться с http:// или https://"
 
-#: backend/core/tasks.py:61
+#: backend/core/tasks.py:64
 #, python-brace-format
 msgid "Site {site} status in {country}: {status}"
 msgstr "Статус сайта {site} в стране {country}: {status}"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-09 14:49+0300\n"
+"POT-Creation-Date: 2025-06-09 19:30+0300\n"
 "PO-Revision-Date: 2025-06-06 22:56+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -33,6 +33,14 @@ msgid ""
 "Country: {country}\n"
 "Date: {date}\n"
 "Status: {status}"
+msgstr ""
+
+#: backend/bot/handlers/checks_history.py:36
+#, python-brace-format
+msgid ""
+"Last checks\n"
+"\n"
+"{checks_info}"
 msgstr ""
 
 #: backend/bot/handlers/menu.py:15 backend/bot/handlers/start.py:24
@@ -132,7 +140,7 @@ msgstr ""
 msgid "Invalid URL or it does not exist. It must start with http:// or https://"
 msgstr ""
 
-#: backend/core/tasks.py:61
+#: backend/core/tasks.py:64
 #, python-brace-format
 msgid "Site {site} status in {country}: {status}"
 msgstr ""

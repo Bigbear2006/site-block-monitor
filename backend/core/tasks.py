@@ -5,7 +5,10 @@ from aiogram.exceptions import TelegramBadRequest, TelegramRetryAfter
 from aiogram.utils.i18n import gettext as _
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from django.db.models import Count, F, Q
+from django.utils.timezone import now
 
+from bot.integrations.ping_admin.service import disable_task
 from bot.loader import bot, i18n
 from bot.utils.aio import asyncio_wait
 from core.models import Client, MonitoredSite
@@ -79,5 +82,31 @@ async def notify_site_status(task_id: int, status: str):
             async for client in Client.objects.filter(
                 monitored_sites__monitored_site=site,
             )
+        ],
+    )
+
+
+@async_shared_task
+async def disable_monitored_sites():
+    sites_ids = (
+        MonitoredSite.objects.annotate(
+            total_count=Count('clients'),
+            unpaid_count=Count(
+                'clients',
+                filter=Q(
+                    clients__client__subscription_end__lt=now(),
+                    clients__client__is_active=True,
+                ),
+            ),
+        )
+        .filter(total_count=F('unpaid_count'))
+        .values_list('pk', flat=True)
+        .order_by()
+        .distinct()
+    )
+    await asyncio_wait(
+        [
+            asyncio.create_task(disable_task(site_id))
+            async for site_id in sites_ids
         ],
     )

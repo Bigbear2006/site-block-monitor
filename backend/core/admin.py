@@ -44,3 +44,8 @@ class ClientMonitoredSiteAdmin(admin.ModelAdmin):
 @admin.register(models.SiteCheck)
 class SiteCheckAdmin(admin.ModelAdmin):
     list_select_related = ('monitored_site__site', 'monitored_site__country')
+
+
+@admin.register(models.Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_select_related = ('client',)
