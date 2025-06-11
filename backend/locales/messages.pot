@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-09 19:30+0300\n"
+"POT-Creation-Date: 2025-06-11 17:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,41 +46,42 @@ msgstr ""
 msgid "Hello! I'm SiteOn - sites block monitor!"
 msgstr ""
 
-#: backend/bot/handlers/monitored_site.py:36
-msgid "Monitoring a single site in one country costs €10 per month"
-msgstr ""
-
-#: backend/bot/handlers/monitored_site.py:43
-msgid "One site monitoring"
-msgstr ""
-
-#: backend/bot/handlers/monitored_site.py:63
-#: backend/bot/handlers/monitored_site.py:76
+#: backend/bot/handlers/monitored_site.py:44
+#: backend/bot/handlers/monitored_site.py:77
+#: backend/bot/handlers/monitored_site.py:88
 msgid "Enter site URL"
 msgstr ""
 
-#: backend/bot/handlers/monitored_site.py:87
+#: backend/bot/handlers/monitored_site.py:50
+msgid "Monitoring a single site in one country costs €10 per month"
+msgstr ""
+
+#: backend/bot/handlers/monitored_site.py:57
+msgid "One site monitoring"
+msgstr ""
+
+#: backend/bot/handlers/monitored_site.py:99
 msgid "URL has been changed!"
 msgstr ""
 
-#: backend/bot/handlers/monitored_site.py:96
-#: backend/bot/handlers/monitored_site.py:106
+#: backend/bot/handlers/monitored_site.py:108
+#: backend/bot/handlers/monitored_site.py:118
 msgid "Choose country"
 msgstr ""
 
-#: backend/bot/handlers/monitored_site.py:120
+#: backend/bot/handlers/monitored_site.py:132
 msgid "Country has been changed!"
 msgstr ""
 
-#: backend/bot/handlers/monitored_site.py:131
+#: backend/bot/handlers/monitored_site.py:143
 msgid "Site added!"
 msgstr ""
 
-#: backend/bot/handlers/monitored_site.py:138
+#: backend/bot/handlers/monitored_site.py:150
 msgid "You're monitoring these sites"
 msgstr ""
 
-#: backend/bot/handlers/monitored_site.py:151
+#: backend/bot/handlers/monitored_site.py:163
 #, python-brace-format
 msgid ""
 "URL: {url}\n"
